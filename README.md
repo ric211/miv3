@@ -2,9 +2,9 @@
 
  - MIV functions are similar to VIM.
 
-It is possible to pass argument:
- - miv(null) - open blank page
- - miv(String) - open page with String
+It is best to use this in a CLI-like environment where you have commands to start MIV3.
+In order to use MIV3 like this you need to put StartMIV(); in your command switch.
+After StartMIV(); is run, it will walk you through the rest of the steps needed.
  
 Possible action inside editor:
  - i (Enter INSERT mode)
