@@ -8,6 +8,8 @@ After StartMIV(); is run, it will walk you through the rest of the steps needed.
  
 Possible action inside editor:
  - i (Enter INSERT mode)
- - ESC button (Exit INSERT mode)
+ - ESC button (Exit INSERT mode, or go back to editor from help screen)
  - :x (Save and Exit), returns String of text
  - :q (Quit without saving), returns null
+
+ - :help (Display start/help page)
