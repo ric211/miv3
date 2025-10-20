@@ -9,11 +9,12 @@ namespace MIV
         private static Sys.FileSystem.CosmosVFS FS;
         public static string file;
         
-
         protected override void BeforeRun()
         {
 
-            FS = new Sys.FileSystem.CosmosVFS(); Sys.FileSystem.VFS.VFSManager.RegisterVFS(FS); FS.Initialize();
+            FS = new Sys.FileSystem.CosmosVFS(); 
+            Sys.FileSystem.VFS.VFSManager.RegisterVFS(FS); 
+            FS.Initialize();
             
         }
 
