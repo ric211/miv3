@@ -210,7 +210,7 @@ namespace MIV
                     continue;
                 }
 
-                // start insert mode (kes: i)
+                // start insert mode (key: i)
                 if (keyInfo.Key == ConsoleKey.I && !editMode)
                 {
                     editMode = true;
@@ -249,7 +249,6 @@ namespace MIV
                         continue;
                     }
                 }
-
                 // outside of insert-mode: ignore
             }
         }
@@ -346,7 +345,6 @@ namespace MIV
                                 Console.Write(input);
                             }
                         }
-
                         prevLength = input.Length;
                     }
                     continue;
@@ -415,7 +413,7 @@ namespace MIV
             Console.WriteLine("Do you want to open " + Kernel.file + "? (y/n)");
             var answer = Console.ReadLine()?.Trim().ToLowerInvariant();
 
-            // accept any string starting with y/n (easter egg)
+            // accept any string starting with y/n as yes or no
             if (!string.IsNullOrEmpty(answer) && answer.StartsWith("y"))
             {
                 text = miv(File.ReadAllText(path));
