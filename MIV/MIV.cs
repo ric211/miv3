@@ -7,31 +7,33 @@ using System.IO;
 
 namespace MIV
 {
-    class MIV
+    public class MIV
     {
+        private static string file;
+
         public static void printMIVStartScreen()
         {
             Console.Clear();
             Console.WriteLine("~");
             Console.WriteLine("~");
             Console.WriteLine("~");
+            Console.WriteLine("~                             MIV^3 - MInimalistic Vi");
             Console.WriteLine("~");
+            Console.WriteLine("~                                 version 3.0");
             Console.WriteLine("~");
+            Console.WriteLine("~                            OG by Denis Bartashevich");
+            Console.WriteLine("~                            Updated by WinBamStudios");
+            Console.WriteLine("~                               Modified by ric211");
             Console.WriteLine("~");
+            Console.WriteLine("~                         https://github.com/ric211/miv3");
             Console.WriteLine("~");
-            Console.WriteLine("~                             MIV^2 - MInimalistic Vi");
+            Console.WriteLine("~                  MIV is open source and freely distributable");
             Console.WriteLine("~");
-            Console.WriteLine("~                                 version 1.3b1");
-            Console.WriteLine("~                           OG by Denis Bartashevich");
-            Console.WriteLine("~                            Update by WinBamStudios");
-            Console.WriteLine("~                    MIV is open source and freely distributable");
-            Console.WriteLine("~");
-            Console.WriteLine("~                     type :help<Enter>          for information");
-            Console.WriteLine("~                     type :q<Enter>             to exit");
-            Console.WriteLine("~                     type :wq<Enter>            save to file and exit");
-            Console.WriteLine("~                     press i                    to write");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
+            Console.WriteLine("~              press i                    to write (enter edit-mode)");
+            Console.WriteLine("~              press <Esc>                to exit edit-mode");
+            Console.WriteLine("~              type :help<Enter>          for information");
+            Console.WriteLine("~              type :q<Enter>             to quit without saving");
+            Console.WriteLine("~              type :x<Enter>             to save to file and exit");
             Console.WriteLine("~");
             Console.WriteLine("~");
             Console.WriteLine("~");
@@ -41,14 +43,9 @@ namespace MIV
 
         public static String stringCopy(String value)
         {
-            String newString = String.Empty;
-
-            for (int i = 0; i < value.Length - 1; i++)
-            {
-                newString += value[i];
-            }
-
-            return newString;
+            // returns whole string without last char (e.g. newline)
+            if (string.IsNullOrEmpty(value) || value.Length <= 1) return String.Empty;
+            return value.Substring(0, value.Length - 1);
         }
 
         public static void printMIVScreen(char[] chars, int pos, String infoBar, Boolean editMode)
@@ -110,6 +107,7 @@ namespace MIV
         {
             Boolean editMode = false;
             int pos = 0;
+            // min 2000 chars, expandable
             char[] chars = new char[2000];
             String infoBar = String.Empty;
 
@@ -119,8 +117,13 @@ namespace MIV
             }
             else
             {
-                pos = start.Length;
+                // lengthen buffer when needed
+                if (start.Length >= chars.Length)
+                {
+                    Array.Resize(ref chars, start.Length * 2);
+                }
 
+                pos = start.Length;
                 for (int i = 0; i < start.Length; i++)
                 {
                     chars[i] = start[i];
@@ -130,54 +133,39 @@ namespace MIV
 
             ConsoleKeyInfo keyInfo;
 
-            do
+            while (true)
             {
                 keyInfo = Console.ReadKey(true);
 
                 if (isForbiddenKey(keyInfo.Key)) continue;
 
-                else if (!editMode && keyInfo.KeyChar == ':')
+                // start command mode
+                if (!editMode && keyInfo.KeyChar == ':')
                 {
                     infoBar = ":";
                     printMIVScreen(chars, pos, infoBar, editMode);
-                    do
+
+                    // collect command
+                    while (true)
                     {
                         keyInfo = Console.ReadKey(true);
+
                         if (keyInfo.Key == ConsoleKey.Enter)
                         {
-                            if (infoBar == ":wq")
+                            if (infoBar == ":x")
                             {
-                                String returnString = String.Empty;
-                                for (int i = 0; i < pos; i++)
-                                {
-                                    returnString += chars[i];
-                                }
-                                return returnString;
+                                // cancel & save
+                                return new string(chars, 0, pos);
                             }
                             else if (infoBar == ":q")
                             {
-                                ConsoleKeyInfo quitKeyInfo = Console.ReadKey(true);
-                                infoBar = "Quit? (y/n)";
-                                quitKeyInfo = Console.ReadKey(true);
-                                if (quitKeyInfo.KeyChar == 'y')
-                                {
-                                    return null;
-                                }
-                                else
-                                {
-                                    infoBar = "";
-                                    printMIVScreen(chars, pos, infoBar, editMode);
-                                    break;
-                                }
+                                // cancel without save
+                                return null;
                             }
                             else if (infoBar == ":help")
                             {
                                 printMIVStartScreen();
                                 break;
-                            }
-                            else if (infoBar == ":q!")
-                            {
-                                return null;
                             }
                             else
                             {
@@ -186,51 +174,35 @@ namespace MIV
                                 break;
                             }
                         }
+                        else if (keyInfo.Key == ConsoleKey.Escape)
+                        {
+                            // cancel command mode
+                            infoBar = String.Empty;
+                            printMIVScreen(chars, pos, infoBar, editMode);
+                            break;
+                        }
                         else if (keyInfo.Key == ConsoleKey.Backspace)
                         {
                             infoBar = stringCopy(infoBar);
                             printMIVScreen(chars, pos, infoBar, editMode);
                         }
-                        else if (keyInfo.KeyChar == 'q')
-                        {
-                            infoBar += "q";
-                        }
-                        else if (keyInfo.KeyChar == ':')
-                        {
-                            infoBar += ":";
-                        }
-                        else if (keyInfo.KeyChar == 'w')
-                        {
-                            infoBar += "w";
-                        }
-                        else if (keyInfo.KeyChar == 'h')
-                        {
-                            infoBar += "h";
-                        }
-                        else if (keyInfo.KeyChar == 'e')
-                        {
-                            infoBar += "e";
-                        }
-                        else if (keyInfo.KeyChar == 'l')
-                        {
-                            infoBar += "l";
-                        }
-                        else if (keyInfo.KeyChar == 'p')
-                        {
-                            infoBar += "p";
-                        }
                         else
                         {
-                            continue;
+                            // append generically printable chars
+                            char c = keyInfo.KeyChar;
+                            if (!char.IsControl(c))
+                            {
+                                infoBar += c;
+                                printMIVScreen(chars, pos, infoBar, editMode);
+                            }
                         }
-                        printMIVScreen(chars, pos, infoBar, editMode);
+                    }
 
-
-
-                    } while (keyInfo.Key != ConsoleKey.Escape);
+                    continue;
                 }
 
-                else if (keyInfo.Key == ConsoleKey.Escape)
+                // Esc ends insert mode
+                if (keyInfo.Key == ConsoleKey.Escape)
                 {
                     editMode = false;
                     infoBar = String.Empty;
@@ -238,7 +210,8 @@ namespace MIV
                     continue;
                 }
 
-                else if (keyInfo.Key == ConsoleKey.I && !editMode)
+                // start insert mode (kes: i)
+                if (keyInfo.Key == ConsoleKey.I && !editMode)
                 {
                     editMode = true;
                     infoBar = "-- INSERT --";
@@ -246,29 +219,39 @@ namespace MIV
                     continue;
                 }
 
-                else if (keyInfo.Key == ConsoleKey.Enter && editMode && pos >= 0)
+                // behaviour in insert mode
+                if (editMode)
                 {
-                    chars[pos++] = '\n';
-                    printMIVScreen(chars, pos, infoBar, editMode);
-                    continue;
+                    if (keyInfo.Key == ConsoleKey.Enter)
+                    {
+                        if (pos >= chars.Length) Array.Resize(ref chars, chars.Length * 2);
+                        chars[pos++] = '\n';
+                        printMIVScreen(chars, pos, infoBar, editMode);
+                        continue;
+                    }
+                    else if (keyInfo.Key == ConsoleKey.Backspace)
+                    {
+                        if (pos > 0) pos--;
+                        if (pos < chars.Length) chars[pos] = '\0';
+                        printMIVScreen(chars, pos, infoBar, editMode);
+                        continue;
+                    }
+                    else
+                    {
+                        char c = keyInfo.KeyChar;
+                        if (!char.IsControl(c))
+                        {
+                            if (pos >= chars.Length) Array.Resize(ref chars, chars.Length * 2);
+                            chars[pos++] = c;
+                            printMIVScreen(chars, pos, infoBar, editMode);
+                        }
+                        // else: ignore
+                        continue;
+                    }
                 }
-                else if (keyInfo.Key == ConsoleKey.Backspace && editMode && pos >= 0)
-                {
-                    if (pos > 0) pos--;
 
-                    chars[pos] = '\0';
-
-                    printMIVScreen(chars, pos, infoBar, editMode);
-                    continue;
-                }
-
-                if (editMode && pos >= 0)
-                {
-                    chars[pos++] = keyInfo.KeyChar;
-                    printMIVScreen(chars, pos, infoBar, editMode);
-                }
-
-            } while (true);
+                // outside of insert-mode: ignore
+            }
         }
 
         public static bool isForbiddenKey(ConsoleKey key)
@@ -285,21 +268,141 @@ namespace MIV
         {
             for (int i = 0; i < time; i++) ;
         }
-        public static void StartMIV()
+
+        private static string ReadFileNameOrCancel()
         {
-            Console.WriteLine("Enter file's filename to open:");
-            Console.WriteLine("If the specified file does not exist, it will be created.");
-            Kernel.file = Console.ReadLine();
+            string input = string.Empty;
+
+            int startLeft = 0, startTop = 0;
+            bool cursorPosSupported = true;
             try
             {
-                if (File.Exists(@"0:\" + Kernel.file))
+                startLeft = Console.CursorLeft;
+                startTop = Console.CursorTop;
+            }
+            catch
+            {
+                cursorPosSupported = false;
+            }
+
+            int prevLength = 0;
+
+            while (true)
+            {
+                var key = Console.ReadKey(true);
+
+                if (key.Key == ConsoleKey.Escape)
+                {
+                    return null;
+                }
+
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    return input;
+                }
+
+                if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (input.Length > 0)
+                    {
+                        input = input.Substring(0, input.Length - 1);
+
+                        if (cursorPosSupported)
+                        {
+                            try
+                            {
+                                Console.SetCursorPosition(startLeft, startTop);
+                                Console.Write(input);
+                                if (prevLength > input.Length)
+                                {
+                                    // delete unused chars
+                                    Console.Write(new string(' ', prevLength - input.Length));
+                                }
+                                // set cursor to end of input
+                                Console.SetCursorPosition(startLeft + input.Length, startTop);
+                            }
+                            catch
+                            {
+                                // fallback, if SetCursorPosition isn't available
+                                Console.Write("\r");
+                                Console.Write(input);
+                                if (prevLength > input.Length)
+                                {
+                                    Console.Write(new string(' ', prevLength - input.Length));
+                                    Console.Write("\r");
+                                    Console.Write(input);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.Write("\r");
+                            Console.Write(input);
+                            if (prevLength > input.Length)
+                            {
+                                Console.Write(new string(' ', prevLength - input.Length));
+                                Console.Write("\r");
+                                Console.Write(input);
+                            }
+                        }
+
+                        prevLength = input.Length;
+                    }
+                    continue;
+                }
+
+                // append printable chars
+                char c = key.KeyChar;
+                if (!char.IsControl(c))
+                {
+                    input += c;
+                    if (cursorPosSupported)
+                    {
+                        try
+                        {
+                            Console.SetCursorPosition(startLeft, startTop);
+                            Console.Write(input);
+                            Console.SetCursorPosition(startLeft + input.Length, startTop);
+                        }
+                        catch
+                        {
+                            Console.Write(c);
+                        }
+                    }
+                    else
+                    {
+                        Console.Write(c);
+                    }
+                    prevLength = input.Length;
+                }
+            }
+        }
+
+        public static void StartMIV()
+        {
+            Console.WriteLine("\nEnter filename to open:\n" +
+                "If the specified file doesn't exist, it will be created.\n" +
+                "Press <Esc> to exit.");
+
+            Kernel.file = ReadFileNameOrCancel();
+            if (Kernel.file == null)
+            {
+                Console.WriteLine("\n\nExited.\n");
+                return;
+            }
+
+            var path = @"0:\" + Kernel.file;
+            try
+            {
+                if (File.Exists(path))
                 {
                     Console.WriteLine("Found file!");
                 }
-                else if (!File.Exists(@"0:\" + Kernel.file))
+                else
                 {
                     Console.WriteLine("Creating file!");
-                    File.Create(@"0:\" + Kernel.file);
+                    using (File.Create(path)) { } // close stream immediately
                 }
                 Console.Clear();
             }
@@ -309,13 +412,22 @@ namespace MIV
             }
 
             String text = String.Empty;
-            Console.WriteLine("Do you want to open " + Kernel.file + " content? (Yes/No)");
-            if (Console.ReadLine().ToLower() == "yes" || Console.ReadLine().ToLower() == "y")
+            Console.WriteLine("Do you want to open " + Kernel.file + "? (y/n)");
+            var answer = Console.ReadLine()?.Trim().ToLowerInvariant();
+
+            // accept any string starting with y/n (easter egg)
+            if (!string.IsNullOrEmpty(answer) && answer.StartsWith("y"))
             {
-                text = miv(File.ReadAllText(@"0:\" + Kernel.file));
+                text = miv(File.ReadAllText(path));
+            }
+            else if (!string.IsNullOrEmpty(answer) && answer.StartsWith("n"))
+            {
+                ExitMiv();
+                return;
             }
             else
             {
+                // every input => new buffer
                 text = miv(null);
             }
 
@@ -323,9 +435,17 @@ namespace MIV
 
             if (text != null)
             {
-                File.WriteAllText(@"0:\" + Kernel.file, text);
+                File.WriteAllText(path, text);
                 Console.WriteLine("Content has been saved to " + Kernel.file);
             }
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey(true);
+        }
+
+        public static void ExitMiv()
+        {
+            Console.Clear();
+            Console.WriteLine("Exited Editor Context.");
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey(true);
         }
