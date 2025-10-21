@@ -11,11 +11,9 @@ namespace MIV
         
         protected override void BeforeRun()
         {
-
             FS = new Sys.FileSystem.CosmosVFS(); 
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(FS); 
             FS.Initialize();
-            
         }
 
         protected override void Run()
