@@ -17,7 +17,7 @@ namespace MIV
             Console.WriteLine("~");
             Console.WriteLine("~");
             Console.WriteLine("~");
-            Console.WriteLine("~                             MIV^3 - MInimalistic Vi");
+            Console.WriteLine("~                             MIV3 - MInimalistic Vi");
             Console.WriteLine("~");
             Console.WriteLine("~                                 version 3.0");
             Console.WriteLine("~");
