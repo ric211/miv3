@@ -14,6 +14,11 @@ namespace MIV
             FS = new Sys.FileSystem.CosmosVFS(); 
             Sys.FileSystem.VFS.VFSManager.RegisterVFS(FS); 
             FS.Initialize(false);
+
+            // uncomment this for german keyboard layout
+            //Sys.KeyboardManager.SetKeyLayout(new Cosmos.System.ScanMaps.DE_Standard());
+
+            Console.WriteLine("MIV3 succesfully booted - have fun!");
         }
 
         protected override void Run()
