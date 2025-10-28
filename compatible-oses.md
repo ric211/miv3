@@ -6,4 +6,4 @@
 - CS-DOS
 - UTTBOS DEV
 ## COMPATIBLE:
-- All Cosmos OSes are compatible with MIV^2.
+- All Cosmos OSes are compatible with MIV3.
