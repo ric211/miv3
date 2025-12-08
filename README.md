@@ -8,9 +8,14 @@ In order to use MIV3 like this you need to put StartMIV(); in your command switc
 
 After StartMIV(); is run, it will walk you through the rest of the steps needed.
  
-Possible action inside editor:
+## Possible action inside editor:
  - i (Enter INSERT mode)
  - ESC button (Exit INSERT mode, or go back to editor from help screen)
  - :x (Save and Exit), returns String of text
  - :q (Quit without saving), returns null
  - :help (Display start/help page)
+
+## Install
+To install MIV3 you can simply download the MIV.cs file and add it to your project.
+Kernel.cs shows you a possible implementation of the Editor. Integrate the Editor
+into your preferred Command-Sctructure (e.g. Switch for user input/ Command Handler).
